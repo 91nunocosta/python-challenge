@@ -2,6 +2,7 @@
 from os import path
 from unittest import TestCase
 import json
+from urllib.parse import urlparse, parse_qs
 from flaskr import create_app
 
 class TestSuggestionsAPI(TestCase):
@@ -28,3 +29,19 @@ class TestSuggestionsAPI(TestCase):
         with open(self.corpus_path) as corpus_file:
             expected_suggetions = set(line.rstrip('\n') for line in corpus_file)
         self.assertEqual(set(suggestions), expected_suggetions )
+    
+    def test_can_paginate_suggestions(self):
+        next_page = '/suggestions?limit=10'
+        for page in range(3):
+            response = self.client.get(next_page)
+            payload = json.loads(response.data)
+            self.assertEqual(payload['total'], 187)
+            self.assertEqual(payload['limit'], 10)
+            self.assertEqual(len(payload['results']), 10)
+            self.assertEqual(payload['offset'], 10*page)
+            next_page = payload['next']
+            query_parameters = parse_qs(urlparse(next_page).query)
+            self.assertDictEqual(query_parameters, {
+                'limit': ['10'],
+                'offset': [str(10*(page+1))]
+            })
