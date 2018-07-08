@@ -38,20 +38,20 @@ The web service provides the following end-point.
 
 `GET /suggestions`
 
-###### Query Parameters
+###### Query Parameters:
 
-`q` - prefix for the suggestions be be obtained.
-`limit` - number of results to be obtained.
-`offset` - position of the first result to be obtained from all suggestions.
+* `q` - prefix for the suggestions be be obtained;
+* `limit` - number of results to be obtained;
+* `offset` - position of the first result to be obtained from all suggestions.
 
 ###### Response
 
-The response is a `application/json` with the following keys.
+The response is a `application/json` with the following keys:
 
-`total` - total number of suggestions for the given prefix.
-`limit` - number of results being presented.
-`offset` - position of the first result from all suggestions.
-`next` - URL for the next page of results.
+* `total` - total number of suggestions for the given prefix;
+* `limit` - number of results being presented;
+* `offset` - position of the first result from all suggestions;
+* `next` - URL for the next page of results.
 
 ###### Example
 
