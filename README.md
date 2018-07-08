@@ -1,57 +1,89 @@
-# Aptoide - Python Challenge
+# Autocomplete Web Service
 
-## Autocomplete API
+Flask based web service that suggests words starting with a given prefix. The words are obtained from a pre-configured corpus text file. This was implemented in the context of [a python challenge](https://github.com/Aptoide/python-challenge).
 
-You are asked to implement an Autocomplete API that helps users searching for apps by
-their name. When writing the name of an app, the possible results should be shown to
-the user. For example, if the user is inputting *Fac*, two possible choices are
-*Facebook* and *Facebook Lite*.
+**DISCLAIMER**: This web service can be unsuitable for big corpus, once it loads them entirely in memory.
 
-The challenge is composed of 2 main components:
+## Requirements
 
-* The autocomplete system
-* An API (a microservice/web service) that receives a query and returns the possible
-results for that query
+This web service has the following dependencies:
 
-The autocomplete system can be seen as a composition of 2 subcomponents:
+- [Flask](http://flask.pocoo.org/)
+- [pygtries](https://github.com/google/pygtrie)
 
-* A data structure to store the possible words (the corpus). This data structure
-should enable quick lookups of words.
-* A search algorithm that given the above data structure and a query, should
-output the possible words
+Install them in your environment before running the server. You can use the requirements file at the root of the project:
 
-The microservice/web service should be simple enough as to just receive as input a
-user query, ask the autocomplete system for the possible results and send them back.
+`pip install -r requirements.txt`
 
+## Configuration
 
-## What we expect to receive from you
+The web service is configured using the following environment variables:
 
-When you are ready to submit your answer to this challenge, you should set up a
-public GitHub repository with everything we ask below:
+- `CORPUS_PATH`: The path for the corpus text file. It should be a list of words, one by line.
 
-* The autocomplete system
-* The API to query the autocomplete system
-* Documentation with instructions regarding how to set up the system and how
-to test it
-* Automated tests covering as much of the code as possible
+Set the configurations variable before running the server:
+`export CORPUS_PATH=<corpus_file_path>`
 
+## Execution
 
-## Important remarks
+To run the server:
 
-* The challenge should be done using **Python**
-* The running environment will be a **Linux machine**
-* The corpus (i.e. possible words that the autocomplete system can output) of the
-autocomplete system is **set in the setup/loading time** and remains **unchanged during runtime**
-* The autocomplete system can have a **high setup/loading time** but should be **very fast at runtime**
-* It is more important to have **less code and have it completely tested** with automated
-tests than to have a **lot of code without automated tests** to ensure its quality
+1.  Set the flask application module, which is implemented in the `flaskr` directory: `export FLASK_APP=flaskr`.
 
+2.  Run the flask application: `flask run`.
 
-## Helpers
+## API
 
-* We're providing 2 corpus in the [*test_files*](./test_files) directory with different sizes that can be used for testing
-* Regarding the autocomplete system's data structure, search for **Trie** and **Tree-like data structures**
-* As for the autocomplete system's search algorithm, search for **BFS/DFS algorithms**
-* For the API and web server, read about **Flask** (Python module)
-* For the automated tests, read about **unittest** (Python module) and
-**docstrings**
+The web service provides the following end-point.
+
+`GET /suggestions`
+
+###### Query Parameters
+
+`q` - prefix for the suggestions be be obtained.
+`limit` - number of results to be obtained.
+`offset` - position of the first result to be obtained from all suggestions.
+
+###### Response
+
+The response is a `application/json` with the following keys.
+
+`total` - total number of suggestions for the given prefix.
+`limit` - number of results being presented.
+`offset` - position of the first result from all suggestions.
+`next` - URL for the next page of results.
+
+###### Example
+
+Request:
+
+`GET /suggestions?q=F&limit=10&offset=10`
+
+Response:
+
+```json 
+{
+    limitl : 10,
+    next: "suggestions?limit=10&offset=20",
+    offset: 10,
+    results: [
+        "FaceApp",
+        "FaceLock for apps",
+        "FaceLOOK for Facebook",
+        "Facetune",
+        "FaceSwap Face Swap Live",
+        "Fast Racing 3D",
+        "Fast Reboot",
+        "Fast Download Manager",
+        "Fast Followers",
+        "Fast Facebook Video Downloader",
+    ],
+    total: 393
+}
+```
+
+## Tests
+
+All unit tests can be run using _pytest_ from the project's root directory.
+
+`pytest`
