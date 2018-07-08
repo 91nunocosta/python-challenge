@@ -2,7 +2,8 @@
 from pygtrie import CharTrie
 
 class Autocompleter():
-    """Autocomple Sytems. 
+    """Autocomple Sytems.
+
     Maintains a trie with keys from a given corpus of words.
     Gives autocompletion suggestions by retrieving all keys for a give prefix.
     """ 

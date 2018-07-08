@@ -3,7 +3,10 @@ from unittest import TestCase
 from autocomplete import Autocompleter
 
 class TestAutocompleter(TestCase):
+    """Test Autocomplete suggest operation."""
+
     def setUp(self):
+        """Setsup the Autocompleter to test."""
         self.autocompleter = Autocompleter([
             'WhatsApp Messenger',
             'Facebook',
@@ -20,7 +23,7 @@ class TestAutocompleter(TestCase):
         self.assertListEqual(list(suggestions), expected_suggestions)
 
     def test_can_suggest_no_words(self):
-        """Test can doesn't suggest any word when none starts with the given prefix"""
+        """Test can doesn't suggest any word when none starts with the given prefix."""
         suggestions = self.autocompleter.suggest('PrefixForNothing')
         expected_suggestions = []
         self.assertListEqual(list(suggestions), expected_suggestions)
