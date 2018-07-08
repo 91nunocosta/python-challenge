@@ -1,8 +1,8 @@
-"""Autocomplete system. Suggests word completitions from a preconfigured corpus."""
+"""Autocomplete system. Suggests word completions from a preconfigured corpus."""
 from pygtrie import CharTrie
 
 class Autocompleter():
-    """Autocomple Sytems.
+    """Autocomplete System.
 
     Maintains a trie with keys from a given corpus of words.
     Gives autocompletion suggestions by retrieving all keys for a give prefix.
@@ -13,7 +13,7 @@ class Autocompleter():
         self.trie = CharTrie((word, True) for word in words)
         
     def suggest(self, prefix):
-        """Return all words in the corpus starting with a givne prefix."""
+        """Return all words in the corpus starting with a given prefix."""
         try:
             return self.trie.keys(prefix=prefix)
         except KeyError:

@@ -9,7 +9,7 @@ class TestSuggestionsAPI(TestCase):
     """Test GET /suggestions requests."""
     
     def setUp(self):
-        """Setup the a test client for the API."""
+        """Setsup the a test client for the API."""
         self.corpus_path = path.join(path.dirname(__file__), '../../test_files/190titles.csv')
         self.app = create_app(corpus_path=self.corpus_path)
         self.app.config['TESTING'] = True
@@ -52,7 +52,7 @@ class TestSuggestionsAPI(TestCase):
             })
     
     def test_can_get_suggestions_page_after_all_results(self):
-        """Test can get suggestions with an offset which is grether than the number of results."""
+        """Test can get suggestions with an offset which is greater than the number of results."""
         response = self.client.get('/suggestions?offset=1000')
         payload = json.loads(response.data)
         self.assertEqual(len(payload['results']), 0)
