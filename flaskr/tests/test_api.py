@@ -45,3 +45,8 @@ class TestSuggestionsAPI(TestCase):
                 'limit': ['10'],
                 'offset': [str(10*(page+1))]
             })
+    
+    def test_can_get_suggestions_page_after_all_results(self):
+        response = self.client.get('/suggestions?offset=1000')
+        payload = json.loads(response.data)
+        self.assertEqual(len(payload['results']), 0)
