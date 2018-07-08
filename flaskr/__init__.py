@@ -10,6 +10,11 @@ from flask import abort
 from autocomplete import Autocompleter 
 
 def create_app(corpus_path=None):
+    """Flask Application Factory.
+    
+    Optional Arguments:
+    corpus_path: the path for the corpus file, which sould be a list with a word by line.
+    """
     app = Flask(__name__)
 
     if corpus_path is None:
@@ -21,6 +26,13 @@ def create_app(corpus_path=None):
 
     @app.route('/suggestions')
     def suggestions():
+        """GET /suggestions end-point.
+        
+        Accepted Query Parameters:
+        q: the prefix. 
+        limit: the number of reslts by page.
+        offset: the position of the first result in the list of all suggestions.
+        """
         prefix = request.args.get('q', '')
         suggestions = autocompleter.suggest(prefix)
         total = len(suggestions)
