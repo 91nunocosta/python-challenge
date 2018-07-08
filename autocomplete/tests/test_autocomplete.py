@@ -24,3 +24,13 @@ class TestAutocompleter(TestCase):
         suggestions = self.autocompleter.suggest('PrefixForNothing')
         expected_suggestions = []
         self.assertListEqual(list(suggestions), expected_suggestions)
+
+    def test_can_suggest_for_empty_prefix(self):
+        """Test can suggest when the prefix is empty, returning all words."""
+        suggestions = self.autocompleter.suggest('')
+        expected_suggestions = [
+            'WhatsApp Messenger',
+            'Facebook',
+            'Facebook Lite'
+        ]
+        self.assertListEqual(list(suggestions), expected_suggestions)
