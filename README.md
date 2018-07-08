@@ -63,7 +63,7 @@ Response:
 
 ```json 
 {
-    limitl : 10,
+    limit : 10,
     next: "suggestions?limit=10&offset=20",
     offset: 10,
     results: [
