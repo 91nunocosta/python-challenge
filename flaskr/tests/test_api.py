@@ -59,6 +59,8 @@ class TestSuggestionsAPI(TestCase):
 
     def test_last_suggestions_page_has_not_next(self):
         """Test that the last page in the suggests results doesn't has a next link."""
+        # the corpus setted has only 187 words, because among the 190 lines
+        # 3 words are repeated
         response = self.client.get('/suggestions?limit=10&offset=177')
         payload = json.loads(response.data)
         self.assertIsNone(payload.get('next', None))
