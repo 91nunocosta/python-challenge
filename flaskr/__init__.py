@@ -18,7 +18,9 @@ def create_app(corpus_path=None):
     app = Flask(__name__)
 
     if corpus_path is None:
-        corpus_path = os.getenv('CORPUS_PATH')
+        corpus_path = os.environ.get('CORPUS_PATH', default=None)
+        if corpus_path is None:
+            raise ValueError('No corpus path set.')
 
     with open(corpus_path) as corpus_file:
         words = (line.rstrip('\n') for line in corpus_file)
