@@ -19,20 +19,20 @@ class TestSuggestionsAPI(TestCase):
         """Test can get all suggestions for a given prefix."""
         response = self.client.get('/suggestions?q=Fac')
         suggestions = json.loads(response.data)['results']
-        expected_suggetions = [
+        expected_suggestions = [
             'Facebook',
             'Facebook Lite',
             'Facebook Pages Manager'
         ]
-        self.assertListEqual(suggestions, expected_suggetions)
+        self.assertListEqual(suggestions, expected_suggestions)
 
     def test_can_get_suggestions_for_empty_query(self):
         """Test can get all suggestions when no prefix is specified."""
         response = self.client.get('/suggestions')
         suggestions = json.loads(response.data)['results']
         with open(self.corpus_path) as corpus_file:
-            expected_suggetions = set(line.rstrip('\n') for line in corpus_file)
-        self.assertEqual(set(suggestions), expected_suggetions )
+            expected_suggestions = set(line.rstrip('\n') for line in corpus_file)
+        self.assertEqual(set(suggestions), expected_suggestions )
     
     def test_can_paginate_suggestions(self):
         """Test can iterate over suggestion results pages."""
@@ -57,7 +57,7 @@ class TestSuggestionsAPI(TestCase):
         payload = json.loads(response.data)
         self.assertEqual(len(payload['results']), 0)
 
-    def test_last_suggestions_page_hasnt_next(self):
+    def test_last_suggestions_page_has_not_next(self):
         """Test that the last page in the suggests results doesn't has a next link."""
         response = self.client.get('/suggestions?limit=10&offset=177')
         payload = json.loads(response.data)
