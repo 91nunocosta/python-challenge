@@ -4,7 +4,9 @@ import math
 from urllib.parse import urlunparse, urlencode, ParseResult
 from flask import Flask
 from flask import request
+from flask import Response
 from flask import jsonify
+from flask import abort
 from autocomplete import Autocompleter 
 
 def create_app(corpus_path=None):
@@ -22,8 +24,11 @@ def create_app(corpus_path=None):
         prefix = request.args.get('q', '')
         suggestions = autocompleter.suggest(prefix)
         total = len(suggestions)
-        limit = int(request.args.get('limit', total))
-        offset = int(request.args.get('offset', 0))
+        try:
+            limit = int(request.args.get('limit', total))
+            offset = int(request.args.get('offset', 0))
+        except ValueError:
+            abort(400)
         response = {
             'total': len(suggestions),
             'limit': limit,

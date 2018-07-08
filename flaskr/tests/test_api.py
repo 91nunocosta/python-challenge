@@ -56,5 +56,10 @@ class TestSuggestionsAPI(TestCase):
         payload = json.loads(response.data)
         self.assertIsNone(payload.get('next', None))
 
-
-        
+    def test_can_handle_invalid_limit(self):
+        response = self.client.get('suggestions?limit=a')
+        self.assertEqual(response.status_code, 400)
+    
+    def test_can_handle_invalid_offset(self):
+        response = self.client.get('suggestions?offset=a')
+        self.assertEqual(response.status_code, 400)
