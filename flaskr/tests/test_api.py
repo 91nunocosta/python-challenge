@@ -6,14 +6,17 @@ from urllib.parse import urlparse, parse_qs
 from flaskr import create_app
 
 class TestSuggestionsAPI(TestCase):
+    """Test GET /suggestions requests."""
     
     def setUp(self):
+        """Setup the a test client for the API."""
         self.corpus_path = path.join(path.dirname(__file__), '../../test_files/190titles.csv')
         self.app = create_app(corpus_path=self.corpus_path)
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
     
     def test_can_get_suggestions(self):
+        """Test can get all suggestions for a given prefix."""
         response = self.client.get('/suggestions?q=Fac')
         suggestions = json.loads(response.data)['results']
         expected_suggetions = [
@@ -24,6 +27,7 @@ class TestSuggestionsAPI(TestCase):
         self.assertListEqual(suggestions, expected_suggetions)
 
     def test_can_get_suggestions_for_empty_query(self):
+        """Test can get all suggestions when no prefix is specified."""
         response = self.client.get('/suggestions')
         suggestions = json.loads(response.data)['results']
         with open(self.corpus_path) as corpus_file:
@@ -31,6 +35,7 @@ class TestSuggestionsAPI(TestCase):
         self.assertEqual(set(suggestions), expected_suggetions )
     
     def test_can_paginate_suggestions(self):
+        """Test can iterate over suggestion results pages."""
         next_page = '/suggestions?limit=10'
         for page in range(3):
             response = self.client.get(next_page)
@@ -47,19 +52,23 @@ class TestSuggestionsAPI(TestCase):
             })
     
     def test_can_get_suggestions_page_after_all_results(self):
+        """Test can get suggestions with an offset which is grether than the number of results."""
         response = self.client.get('/suggestions?offset=1000')
         payload = json.loads(response.data)
         self.assertEqual(len(payload['results']), 0)
 
     def test_last_suggestions_page_hasnt_next(self):
+        """Test that the last page in the suggests results doesn't has a next link."""
         response = self.client.get('/suggestions?limit=10&offset=177')
         payload = json.loads(response.data)
         self.assertIsNone(payload.get('next', None))
 
     def test_can_handle_invalid_limit(self):
+        """Test responses with HTTP 400 Bad Request when the requested limit is invalid."""
         response = self.client.get('suggestions?limit=a')
         self.assertEqual(response.status_code, 400)
     
     def test_can_handle_invalid_offset(self):
-        response = self.client.get('suggestions?offset=a')
+        """Test responses with HTTP 400 Bad Request when the requested offset is invalid."""
+        response = self.client.get('suggestions?offset=b')
         self.assertEqual(response.status_code, 400)
