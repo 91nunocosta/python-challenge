@@ -1,5 +1,7 @@
 """API definition."""
 import os
+import math
+from urllib.parse import urlunparse, urlencode, ParseResult
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -19,6 +21,19 @@ def create_app(corpus_path=None):
     def suggestions():
         prefix = request.args.get('q', '')
         suggestions = autocompleter.suggest(prefix)
-        return jsonify(results=list(suggestions))
+        total = len(suggestions)
+        limit = int(request.args.get('limit', total))
+        offset = int(request.args.get('offset', 0))
+        next_query = urlencode({
+            'limit': limit,
+            'offset': offset + limit
+        })
+        next_url = urlunparse(ParseResult(scheme='',netloc='', path='suggestions', params='', query=next_query, fragment=''))
+        return jsonify(total=len(suggestions),
+                       limit=limit,
+                       offset=offset,
+                       results=suggestions[offset:offset+limit],
+                       next=next_url
+                      )
 
     return app
