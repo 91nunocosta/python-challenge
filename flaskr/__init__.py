@@ -12,11 +12,12 @@ def create_app(corpus_path=None):
         corpus_path = os.getenv('CORPUS_PATH')
 
     with open(corpus_path) as corpus_file:
-        autocompleter = Autocompleter(word.rstrip('\n') for word in corpus_file)
+        words = (line.rstrip('\n') for line in corpus_file)
+        autocompleter = Autocompleter(words)
 
     @app.route('/suggestions')
     def suggestions():
-        prefix = request.args.get('q')
+        prefix = request.args.get('q', '')
         suggestions = autocompleter.suggest(prefix)
         return jsonify(results=list(suggestions))
 
