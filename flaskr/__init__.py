@@ -24,16 +24,24 @@ def create_app(corpus_path=None):
         total = len(suggestions)
         limit = int(request.args.get('limit', total))
         offset = int(request.args.get('offset', 0))
-        next_query = urlencode({
+        response = {
+            'total': len(suggestions),
             'limit': limit,
-            'offset': offset + limit
-        })
-        next_url = urlunparse(ParseResult(scheme='',netloc='', path='suggestions', params='', query=next_query, fragment=''))
-        return jsonify(total=len(suggestions),
-                       limit=limit,
-                       offset=offset,
-                       results=suggestions[offset:offset+limit],
-                       next=next_url
-                      )
+            'offset': offset,
+            'results': suggestions[offset:offset+limit]
+        }
+        if offset < total - limit:
+            next_query = urlencode({
+                'limit': limit,
+                'offset': offset + limit
+            })
+            next_url = urlunparse(ParseResult(scheme='',
+                                              netloc='', 
+                                              path='suggestions', 
+                                              params='', 
+                                              query=next_query, 
+                                              fragment=''))
+            response['next'] = next_url
+        return jsonify(response)
 
     return app

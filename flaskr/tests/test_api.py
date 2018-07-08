@@ -50,3 +50,11 @@ class TestSuggestionsAPI(TestCase):
         response = self.client.get('/suggestions?offset=1000')
         payload = json.loads(response.data)
         self.assertEqual(len(payload['results']), 0)
+
+    def test_last_suggestions_page_hasnt_next(self):
+        response = self.client.get('/suggestions?limit=10&offset=177')
+        payload = json.loads(response.data)
+        self.assertIsNone(payload.get('next', None))
+
+
+        
